@@ -1,10 +1,31 @@
+welcome = '''
+   _____                         _                  
+  / ____|                       | |                 
+ | (___    _ __     ___    ___  | |_    __ _   _ __ 
+  \\___ \\  | '_ \\   / _ \\  / __| | __|  / _` | | '__|
+  ____) | | |_) | |  __/ | (__  | |_  | (_| | | |   
+ |_____/  | .__/   \\___|  \\___|  \\__|  \\__,_| |_|   
+          | |                                       
+          |_|                                     0.96-rc1
+==========================================================
+
+                Spectar Adventure I: Eden
+             Edition Version 0.9.6-rc1 Octo23
+    Author: Shark Liang(Text&Story) Leo Huo(Code&Design)
+
+========================================================== 
+
+Press a key to continue...'''
+import faulthandler
+faulthandler.enable()
+
 import itertools
 import keyboard
 import os
 import time
 import random
 from status import *
-from lib import NarrationPrint
+from lib import NarrationPrint, TyperPrint
 
 CONSTANT_CLEAR_SCREEN = 'cls' if os.name == 'nt' else 'clear'
 
@@ -73,7 +94,7 @@ chapter1 = {
 }
 
 now_map_status = MAP_UNLOCKED
-now_mode = GAME_STATUS_DIALOGMODE
+now_mode = GAME_STATUS_STARTMENU
 now_map = [[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]
 now_chapter = {}
 now_text = []
@@ -402,11 +423,44 @@ def logic_deal_with_choice(choice):
         cho.append(["", "", -1])
     return speech, cho
         
+def combat_print_battle_screen(name, hurt=None, method=None, choices=None, dialog=None):
+    global now_dialog_lock
+    now_dialog_lock = LOCK
+    # 示例选项
+    choices = [
+        # This means there is a choice called "Basic-Attack", it will cause 10 damage to the enemy, 
+        # and it will cost 0 hp, and it will cost 10 mp, and it will be displayed as "A"
+        # And after you choose this option, your round will end, and you can't choose other options
+        # And the number 1 after true means in your round, you can use how many times of this option
+        # The last True means this option is not optional, you must make a decision from all non-optional options
+        # The PS(physical strength) and MS(magic strength) may add in the future !!!
+        ["Basic-Attack", 10, 0, -10, "A", True, 1, True],
+        ["Skill", 25, 0, -20, "B", True, 1, True],
+        ["Pass", 0, 0, 0, "C", True, 1, True],
+        ["Restore", 0, +20, -20, "D", False, 1, False],
+    ]
+    clear_screen()
+    if hurt == None and dialog == None:
+        # 没有发生冲突或者对话，打印开始战斗字样
+        TyperPrint("The battle between you and "+name+" starts!", sleep=0.002)
+    
+    # 打印所有的choices
+    for i in range(len(choices)):
+        print(f"[{choices[i][4]}] {i+1}. {choices[i][0]} {'(Optional) ' if choices[i][7] == False else ''}", end="")
+        # Print more information
+        print(f"  --   Damage: {choices[i][1]} MP: {choices[i][2]} HP: {choices[i][3]}")
+    
+    
+    now_dialog_lock = UNLOCK
 
 
 def logic_keypress(key):
     global now_mode, pos_x, pos_y, now_map_status
-    if now_mode == GAME_STATUS_MAPMODE:
+    if now_mode == GAME_STATUS_STARTMENU:
+        if key == "a":
+            # game_load_chapter(chapter1)
+            combat_print_battle_screen("Leo")
+    elif now_mode == GAME_STATUS_MAPMODE:
         pos_x, pos_y = calc_find_coordinate_with_one()        
         # 在地图模式下
         if key == "l":
@@ -470,7 +524,8 @@ def move_character(key):
 
 
 if __name__ == "__main__":
-    game_load_chapter(chapter1)
+    print(welcome)
+    # game_load_chapter(chapter1)
     
     # edit_display_text("Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is: Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is: Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is: Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is:")
 

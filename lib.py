@@ -42,3 +42,10 @@ def NarrationPrint(text, title, box_width=50, delay=0.009):
         print()
 
     print(horizontal_line)
+
+def TyperPrint(text, sleep=0.009):
+    for c in text:
+        print(c, end='', flush=True)
+        time.sleep(sleep)
+    print()
+    
