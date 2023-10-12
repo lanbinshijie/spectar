@@ -26,17 +26,23 @@ import time
 import random
 from status import *
 from lib import NarrationPrint, TyperPrint
+import json
 
 CONSTANT_CLEAR_SCREEN = 'cls' if os.name == 'nt' else 'clear'
 
 chapter1 = {
     "chapter_id": 1,
-    "chapter_name": "Chapter 1: The Beginning",
-    "description": "This is the first chapter of the game. You will start your journey from here.",
+    "chapter_name": "Act 1: The Awakening",
+    "description": "▷ Walk to the special events",
     "map": {
         0: [[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 1, 0, 0, 4, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]],
         1: [[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 5, 0, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]],
         2: [[-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, -1, 0, 0, 0, 0, 5, 0, 0, 1, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]],
+    },
+    "tasks": {
+        0: ["Walk to the place that happened special events"],
+        1: ["Chat to the stranger", "He may help you"],
+        2: ["Wait for more Update!", "That's all!"],
     },
     "plot": {
         0: [("a", "a")],
@@ -127,18 +133,31 @@ def display_print_narration():
     if now_narration_process >= len(now_chapter["plot"][now_chapter_process]):
         now_mode = GAME_STATUS_MAPMODE
         now_narration_process = 0
+        task_print = \
+            now_chapter["chapter_name"] + "\n" + \
+            "-" * 35 + "\n\n" + \
+            "Tasks:" + "\n"
+        for i in range(len(now_chapter["tasks"][now_chapter_process])):
+            task_print += "▷ " + now_chapter["tasks"][now_chapter_process][i] + "\n"
+            
+        edit_display_text(task_print)
         print_Screen()
         return
     # 锁定状态为对话状态
     now_mode = GAME_STATUS_DIALOGMODE
     clear_screen()
-    # 打印now_chapter["plot"][now_chapter_process][now_narration_process]
     now_dialog_lock = LOCK
+    # print(now_dialog_lock)
+    # 打印now_chapter["plot"][now_chapter_process][now_narration_process]
     NarrationPrint(now_chapter["plot"][now_chapter_process][now_narration_process][1], now_chapter["plot"][now_chapter_process][now_narration_process][0])
+    # print(now_dialog_lock)
     now_dialog_lock = UNLOCK
+    # print(now_dialog_lock)
+
     # 更新now_narration_process
     now_narration_process += 1
     # 如果now_narration_process超过了最大值，则解锁状态为地图状态，并print_Screen
+
     
 
 def calc_find_coordinate_with_one():
@@ -246,7 +265,7 @@ def edit_display_text(text):
     now_text.append('+' + '-' * (min_width) + '+')
 
 
-def print_Screen():
+def print_Screen():  # sourcery skip: hoist-similar-statement-from-if, low-code-quality, merge-duplicate-blocks, merge-else-if-into-elif, remove-redundant-if, swap-nested-ifs
     global now_map, now_text
     clear_screen()
     # print(now_text, len(now_text))
@@ -345,12 +364,16 @@ def logic_deal_special(special):
     now_map_status = MAP_LOCKED
     now_mode = GAME_STATUS_QUESTMODE
     npc = now_chapter["special"][special]
+    # 两个选项是否存在（判断选项总长度是否为2）
     dialog = ""
     dialog += npc["name"] + "\n"
     dialog += "---------------" + "\n"
     dialog += npc["description"] + "\n"
     dialog += "\n\n"
-    dialog += f"{now_chapter['special'][special]['choice'][0][1]} ({now_chapter['special'][special]['choice'][0][0]})  {now_chapter['special'][special]['choice'][1][1]} ({now_chapter['special'][special]['choice'][1][0]})"
+    dialog += f"{now_chapter['special'][special]['choice'][0][1]} ({now_chapter['special'][special]['choice'][0][0]})  "
+    if npc["choice"].get(1) is not None:
+        dialog += f"{now_chapter['special'][special]['choice'][1][1]} ({now_chapter['special'][special]['choice'][1][0]})"
+    
     edit_display_text(dialog)
     print_Screen()
 
@@ -371,7 +394,10 @@ def logic_deal_special_continue_speech(speech, choices):
     dialog += "---------------" + "\n"
     dialog += speech + "\n"
     dialog += "\n\n"
-    dialog += f"{choices[0][1]} ({choices[0][0]})  {choices[1][1]} ({choices[1][0]})"
+    dialog += f"{choices[0][1]} ({choices[0][0]})  "
+    
+    if choices[1][2] != -1:
+        dialog += f"{choices[1][1]} ({choices[1][0]})"
 
     edit_display_text(dialog)
     print_Screen()
@@ -440,26 +466,26 @@ def combat_print_battle_screen(name, hurt=None, method=None, choices=None, dialo
         ["Restore", 0, +20, -20, "D", False, 1, False],
     ]
     clear_screen()
-    if hurt == None and dialog == None:
+    if hurt is None and dialog is None:
         # 没有发生冲突或者对话，打印开始战斗字样
-        TyperPrint("The battle between you and "+name+" starts!", sleep=0.002)
-    
+        TyperPrint(f"The battle between you and {name} starts!", sleep=0.002)
+
     # 打印所有的choices
     for i in range(len(choices)):
         print(f"[{choices[i][4]}] {i+1}. {choices[i][0]} {'(Optional) ' if choices[i][7] == False else ''}", end="")
         # Print more information
         print(f"  --   Damage: {choices[i][1]} MP: {choices[i][2]} HP: {choices[i][3]}")
-    
-    
+
+
     now_dialog_lock = UNLOCK
 
 
 def logic_keypress(key):
-    global now_mode, pos_x, pos_y, now_map_status
+    global now_mode, pos_x, pos_y, now_map_status, now_dialog_lock
     if now_mode == GAME_STATUS_STARTMENU:
         if key == "a":
-            # game_load_chapter(chapter1)
-            combat_print_battle_screen("Leo")
+            game_load_chapter(chapter1)
+            # combat_print_battle_screen("Leo")
     elif now_mode == GAME_STATUS_MAPMODE:
         pos_x, pos_y = calc_find_coordinate_with_one()        
         # 在地图模式下
@@ -498,9 +524,12 @@ def logic_keypress(key):
     elif now_mode == GAME_STATUS_DIALOGMODE:
         # 按下a是下一段对话
         if key == "a":
-            if now_dialog_lock == LOCK:
-                return
-            display_print_narration()
+            # print("Press", now_dialog_lock)
+            # exit()
+            if now_dialog_lock != LOCK:
+                display_print_narration()
+                # print(now_dialog_lock, now_map_status)
+                
     else:
         ...
         
@@ -521,9 +550,13 @@ def move_character(key):
         logic_keypress(key.name)
     time.sleep(0.05)
 
-
+def save_player_profile(name):
+    # 将now_chapter的数据打包json，写入saves/name.json文件
+    with open(f"saves/{name}.json", "w") as f:
+        json.dump(now_chapter, f)
 
 if __name__ == "__main__":
+    clear_screen()
     print(welcome)
     # game_load_chapter(chapter1)
     
