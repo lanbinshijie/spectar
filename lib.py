@@ -5,7 +5,7 @@ import time
 def clear_screen():
     os.system("cls")
 
-def NarrationPrint(text, title, box_width=50, delay=0.009):
+def NarrationPrint(text, title, box_width=50, delay=0):
 
     lines = []
     current_line = ''
