@@ -71,7 +71,7 @@ chapter1 = {
                 "You know it's dangerous to be out without a weapon. You never know what might hide in those bushes. ",
             ],
             "choice": {
-                0: ["A", "\"Uh, Thanks.\"", 4],
+                0: ["A", "\"Uh...thanks.\"", 4],
                 1: ["D", "What?", 4],
             }
         },
@@ -92,7 +92,7 @@ chapter1 = {
     },
     "event": {
         3: [0, ".....", [["A", "What happened?", -2, 0]]],
-        4: [0, "You see, I helped you up.", [["A", "Continue", -2, 0]]],
+        4: [0, "(The hunter helped you up)", [["A", "Continue", -2, 0]]],
         0: [0, "He don't want to fight to you.", [["A", "Talk", 1]]],
         1: [0, "Ahh, you wanna talk to me? Oh, I am just a guide to test this game haha.", [["A", "Continue to talk", 2]]],
         2: [0, "I am just a guide to test this game haha.", [["A","Leave", -2, 0]]],
@@ -326,7 +326,7 @@ def print_Screen():  # sourcery skip: hoist-similar-statement-from-if, low-code-
                 print("\n> Make decision ... <")
 
 def calc_map_move(direction, units):
-    # 记录特殊数字（大于2的数字），如果移动后不为-1，则说明出发了剧情，剧情的id为special的值
+    # 记录特殊数字（大于2的数字），如果移动后不为-1，则说明触发了剧情，剧情的id为special的值
     special = -1 
     if direction == MAP_DIRECTION_UP:
         # 判断是否可以向上移动（不为-1）
@@ -537,6 +537,7 @@ def logic_keypress(key):
 # print_Screen()
 sentences = ['The quick brown fox jumps over the lazy dog.', 'She sells seashells by the seashore.', 'Peter Piper picked a peck of pickled peppers.', 'How can a clam cram in a clean cream can?', 'I scream, you scream, we all scream for ice cream.', 'Sally sells seashells down by the seashore.', 'Betty Botter bought some butter but the butter was bitter.', 'I saw Susie sitting in a shoeshine shop.', 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?', 'She stood on the balcony, inexplicably mimicking him hiccuping, and amicably welcoming him in.']
 def move_character(key):
+    save_player_profile("Player")
     global now_hp, now_text
     if key.name == 'w':
         logic_keypress("w")
@@ -551,16 +552,27 @@ def move_character(key):
     time.sleep(0.05)
 
 def save_player_profile(name):
-    # 将now_chapter的数据打包json，写入saves/name.json文件
+    global now_map_status, now_mode, now_chapter_process
+    global now_hp, now_mp, now_choice, now_special, now_chapter_process
+    global now_narration_process, now_dialog_lock
+    save = {
+        "now_map_status": now_map_status,
+        "now_mode": now_mode,
+        "now_hp": now_hp,
+        "now_mp": now_mp,
+        "now_choice": now_choice,
+        "now_special": now_special,
+        "now_chapter_process": now_chapter_process,
+        "now_narration_process": now_narration_process,
+        "now_dialog_lock": now_dialog_lock
+    }
+    # 将主要变量的数据打包json，写入saves/name.json文件
     with open(f"saves/{name}.json", "w") as f:
-        json.dump(now_chapter, f)
+        json.dump(save, f)
 
 if __name__ == "__main__":
     clear_screen()
     print(welcome)
-    # game_load_chapter(chapter1)
-    
-    # edit_display_text("Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is: Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is: Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is: Hello World! The minimum width required to display the text is:The minimum width required to display the text is:The minimum width required to display the text is:")
-
+    save_player_profile("Player")
     keyboard.on_press(move_character)
     keyboard.wait('esc')  # 等待按下ESC键退出程序
